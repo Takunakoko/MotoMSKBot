@@ -4,12 +4,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-
-
 public class MotoMSKBot extends TelegramLongPollingBot {
-
-    private ArrayList<String> errorsList = new ArrayList<>();
 
     private Thread thread = new Thread(new BotRunner(this));
 

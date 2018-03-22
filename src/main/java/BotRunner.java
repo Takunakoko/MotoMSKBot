@@ -47,7 +47,7 @@ public class BotRunner implements Runnable {
                 e.printStackTrace();
             }
             try {
-                Thread.currentThread().sleep(60000);
+                Thread.currentThread().sleep(600000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -254,12 +254,10 @@ public class BotRunner implements Runnable {
                 idNewPosts.add(updateId.getId());
             }
         }
-        System.out.println("IdNewPostNum :" + idNewPosts);
         alredyExistNumbers.clear();
         for (WallPostFull item : items) {
             alredyExistNumbers.add(item.getId());
         }
-        System.out.println("alredyExistNum: " + alredyExistNumbers);
     }
 
     private void firstStart(List<WallPostFull> wallPostFull) {
