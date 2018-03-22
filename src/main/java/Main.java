@@ -17,8 +17,5 @@ public class Main {
             e.printStackTrace();
         }
 
-        MotoMSKBot.initMotoVk();
-
-
     }
 }
