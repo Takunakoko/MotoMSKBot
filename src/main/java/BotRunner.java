@@ -47,7 +47,7 @@ public class BotRunner implements Runnable {
                 e.printStackTrace();
             }
             try {
-                Thread.currentThread().sleep(600000);
+                Thread.currentThread().sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

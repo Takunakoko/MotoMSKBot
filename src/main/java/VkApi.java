@@ -17,7 +17,7 @@ class VkApi {
     public GetResponse getResponseFromWall() throws Exception{
         GetResponse getResponse = vk.wall().get(actor)
                 .ownerId(Constants.OWNER_ID)
-                .count(100)
+                .count(50)
                 .execute();
         return getResponse;
     }
