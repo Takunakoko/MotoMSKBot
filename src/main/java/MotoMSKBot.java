@@ -26,6 +26,9 @@ public class MotoMSKBot extends TelegramLongPollingBot {
                             execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Бот уже запущен!"));
                         }
                     }
+                    if (update.getMessage().getText().equalsIgnoreCase("/isBotAlive")) {
+                        execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Я ЖИВОЙ!"));
+                    }
                     if (update.getMessage().getText().equalsIgnoreCase("/botstop")) {
                         execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Экстренная остановка бота"));
                         System.exit(1);
