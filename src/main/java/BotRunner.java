@@ -29,19 +29,20 @@ public class BotRunner implements Runnable {
                 responseFromWall = vkApi.getResponseFromWall();
                 if (isFirstStart) {
                     firstStart(responseFromWall.getItems());
-                }
-                checkPostAlredyExist(responseFromWall);
-                if (idNewPosts.size() != 0) {
-                    for (Integer id : idNewPosts) {
-                        WallPostFull wallPostFull = getPostByID(id);
-                        if (checkRepost(wallPostFull)) {
-                            sendRepostMessage(wallPostFull);
-                        } else {
-                            sendMessageInCase(wallPostFull);
-                            Thread.currentThread().sleep(1000);
+                }else {
+                    checkPostAlredyExist(responseFromWall);
+                    if (idNewPosts.size() != 0) {
+                        for (Integer id : idNewPosts) {
+                            WallPostFull wallPostFull = getPostByID(id);
+                            if (checkRepost(wallPostFull)) {
+                                sendRepostMessage(wallPostFull);
+                            } else {
+                                sendMessageInCase(wallPostFull);
+                                Thread.currentThread().sleep(1000);
+                            }
                         }
+                        idNewPosts.clear();
                     }
-                    idNewPosts.clear();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -56,7 +57,8 @@ public class BotRunner implements Runnable {
 
 
     private boolean checkRepost(WallPostFull wallPostFull) {
-        return wallPostFull.getCopyHistory().size() != 0;
+        if (wallPostFull.getCopyHistory().size() != 0) return true;
+        else return false;
     }
 
     private void sendMessageInCase(WallPostFull wallPostFull) {
@@ -241,11 +243,12 @@ public class BotRunner implements Runnable {
 
     private void checkPostAlredyExist(GetResponse responseFromWall) {
         List<WallPostFull> items = responseFromWall.getItems();
+        System.out.println(alredyExistNumbers);
         boolean label;
         for (WallPostFull updateId : items) {
             label = true;
             for (Integer oldId : alredyExistNumbers) {
-                if (oldId == updateId.getId()) {
+                if (oldId == updateId.getId().intValue()) {
                     label = false;
                     break;
                 }
@@ -258,6 +261,7 @@ public class BotRunner implements Runnable {
         for (WallPostFull item : items) {
             alredyExistNumbers.add(item.getId());
         }
+        System.out.println(idNewPosts);
     }
 
     private void firstStart(List<WallPostFull> wallPostFull) {
