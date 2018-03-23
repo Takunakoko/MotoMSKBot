@@ -243,7 +243,6 @@ public class BotRunner implements Runnable {
 
     private void checkPostAlredyExist(GetResponse responseFromWall) {
         List<WallPostFull> items = responseFromWall.getItems();
-        System.out.println(alredyExistNumbers);
         boolean label;
         for (WallPostFull updateId : items) {
             label = true;
@@ -261,7 +260,6 @@ public class BotRunner implements Runnable {
         for (WallPostFull item : items) {
             alredyExistNumbers.add(item.getId());
         }
-        System.out.println(idNewPosts);
     }
 
     private void firstStart(List<WallPostFull> wallPostFull) {
