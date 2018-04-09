@@ -8,6 +8,10 @@ class VkApi {
     private VkApiClient vk;
     private UserActor actor;
 
+    public VkApi() {
+        initApi();
+    }
+
     void initApi(){
         TransportClient transportClient = HttpTransportClient.getInstance();
          vk = new VkApiClient(transportClient);

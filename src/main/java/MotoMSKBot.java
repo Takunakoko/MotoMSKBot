@@ -4,9 +4,14 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class MotoMSKBot extends TelegramLongPollingBot {
 
-    private Thread thread = new Thread(new BotRunner(this));
+    private VkApi vkApi = new VkApi();
+    boolean isStarted = false;
+    private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
     public void onUpdateReceived(Update update) {
         try {
@@ -14,9 +19,10 @@ public class MotoMSKBot extends TelegramLongPollingBot {
                     || (update.getMessage().getFrom().getUserName().equals("Recedivist"))) {
                 if (update.hasMessage() && update.getMessage().hasText()) {
                     if (update.getMessage().getText().equalsIgnoreCase("/botstart")) {
-                        if (!thread.isAlive()) {
-                            thread.start();
+                        if (!isStarted) {
+                            isStarted = true;
                             execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Бот запущен"));
+                            executor.scheduleWithFixedDelay(new BotRunner(this, vkApi), 0, 20, TimeUnit.SECONDS);
                         } else {
                             execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Бот уже запущен!"));
                         }
@@ -26,6 +32,7 @@ public class MotoMSKBot extends TelegramLongPollingBot {
                     }
                     if (update.getMessage().getText().equalsIgnoreCase("/botstop")) {
                         execute(new SendMessage().setChatId(update.getMessage().getChatId()).setText("Экстренная остановка бота"));
+                        isStarted = false;
                         System.exit(1);
                     }
                 }

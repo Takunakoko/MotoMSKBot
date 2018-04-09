@@ -15,49 +15,43 @@ public class BotRunner implements Runnable {
     private static GetResponse responseFromWall;
     private ArrayList<Integer> idNewPosts = new ArrayList<Integer>();
     private MotoMSKBot mskBot;
+    private VkApi vkApi;
 
-    BotRunner(MotoMSKBot motoMSKBot) {
+    BotRunner(MotoMSKBot motoMSKBot, VkApi vkApi) {
         this.mskBot = motoMSKBot;
+        this.vkApi = vkApi;
     }
 
     @Override
     public void run() {
-        VkApi vkApi = new VkApi();
-        vkApi.initApi();
-        while (true) {
-            try {
-                responseFromWall = vkApi.getResponseFromWall();
-                if (isFirstStart) {
-                    firstStart(responseFromWall.getItems());
-                }else {
-                    checkPostAlredyExist(responseFromWall);
-                    if (idNewPosts.size() != 0) {
-                        for (Integer id : idNewPosts) {
-                            WallPostFull wallPostFull = getPostByID(id);
-                            if (checkRepost(wallPostFull)) {
-                                sendRepostMessage(wallPostFull);
-                            } else {
-                                sendMessageInCase(wallPostFull);
-                                Thread.currentThread().sleep(1000);
-                            }
+        try {
+            responseFromWall = vkApi.getResponseFromWall();
+            if (isFirstStart) {
+                firstStart(responseFromWall.getItems());
+            } else {
+                checkPostAlredyExist(responseFromWall);
+                if (idNewPosts.size() != 0) {
+                    for (Integer id : idNewPosts) {
+                        WallPostFull wallPostFull = getPostByID(id);
+                        if (checkRepost(wallPostFull)) {
+                            sendRepostMessage(wallPostFull);
+                            Thread.currentThread().sleep(1000);
+                        } else {
+                            sendMessageInCase(wallPostFull);
+                            Thread.currentThread().sleep(1000);
                         }
-                        idNewPosts.clear();
                     }
+                    idNewPosts.clear();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            try {
-                Thread.currentThread().sleep(30000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     private boolean checkRepost(WallPostFull wallPostFull) {
-        if (wallPostFull.getCopyHistory().size() != 0) return true;
+        if (wallPostFull.getCopyHistory() != null) return true;
         else return false;
     }
 
@@ -73,12 +67,10 @@ public class BotRunner implements Runnable {
                 if (wallPostFull.getAttachments().get(0).getLink() != null) {
                     sb.append("L");
                     num1 = 0;
-                    System.out.println("В тексте есть линк (0)");
                 }
                 if (wallPostFull.getAttachments().get(0).getPhoto() != null) {
                     sb.append("P");
                     num1 = 0;
-                    System.out.println("В тексте есть фото (0)");
                 }
             } else {
                 for (int i = 0; i < wallPostFull.getAttachments().size(); i++) {
@@ -87,13 +79,11 @@ public class BotRunner implements Runnable {
                             sb.append("P");
                             num2 = i;
                             havePhoto = true;
-                            System.out.println("В тексте есть фото " + num2);
                         }
                     }
                     if (wallPostFull.getAttachments().get(i).getLink() != null) {
                         sb.append("L");
                         num3 = i;
-                        System.out.println("В тексте есть линк " + num3);
                     }
                 }
             }
@@ -116,6 +106,7 @@ public class BotRunner implements Runnable {
             case "T":
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setText(wallPostFull.getText());
                 mskBot.sendMsg(sendMessage);
                 break;
@@ -127,6 +118,7 @@ public class BotRunner implements Runnable {
                 }
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setText(checkTextHttp(wallPostFull.getText()));
                 inlineKeyboardButton = new InlineKeyboardButton()
                         .setText("Перейти по ссылке")
@@ -145,6 +137,7 @@ public class BotRunner implements Runnable {
                 }
                 sendPhotoRequest = new SendPhoto()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setPhoto(photoUrl)
                         .setCaption(checkTextLength(wallPostFull.getText()));
                 mskBot.sendMsg(sendPhotoRequest);
@@ -155,6 +148,7 @@ public class BotRunner implements Runnable {
                 textMessage = checkTextLength(textMessage);
                 sendPhotoRequest = new SendPhoto()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setPhoto(photoUrl)
                         .setCaption(textMessage);
                 inlineKeyboardButton = new InlineKeyboardButton()
@@ -172,6 +166,7 @@ public class BotRunner implements Runnable {
                 textMessage = checkTextLength(textMessage);
                 sendPhotoRequest = new SendPhoto()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setPhoto(photoUrl)
                         .setCaption(textMessage);
                 inlineKeyboardButton = new InlineKeyboardButton()
@@ -193,10 +188,12 @@ public class BotRunner implements Runnable {
             if (!wallPostFull.getText().equals("")) {
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setText(wallPostFull.getText() + "\n" + "----------------" + "\n" + copyHistory.get(0).getText());
             } else {
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setText(copyHistory.get(0).getText());
             }
             mskBot.sendMsg(sendMessage);
@@ -204,11 +201,13 @@ public class BotRunner implements Runnable {
             if (!wallPostFull.getText().equals("")) {
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
-                        .setText(wallPostFull.getText() + "\n" + "----------------" +"\n" + copyHistory.get(0).getText() +
+//                        .setChatId("@testMotoMSK")
+                        .setText(wallPostFull.getText() + "\n" + "----------------" + "\n" + copyHistory.get(0).getText() +
                                 "\n" + "----------------" + "\n" + copyHistory.get(1).getText());
             } else {
                 sendMessage = new SendMessage()
                         .setChatId("@motomskdtp")
+//                        .setChatId("@testMotoMSK")
                         .setText(copyHistory.get(0).getText());
             }
             mskBot.sendMsg(sendMessage);
