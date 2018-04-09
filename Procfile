@@ -1,1 +1,1 @@
-worker: sh target/bin/MotoMSKDTPBot
+worker: sh target/bin/MotoMSKBot
